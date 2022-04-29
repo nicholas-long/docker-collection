@@ -1,4 +1,13 @@
-FROM httpd:latest
+FROM ubuntu:latest
 
-ADD httpd-conf-enable-cgi.sed /tmp/conf.sed
-RUN sed -f /tmp/conf.sed -i /usr/local/apache2/conf/httpd.conf
+RUN apt-get update && apt-get install -y \
+  inetutils-ping \
+  bsdmainutils \
+  kafkacat \
+  apache2
+
+RUN rm /etc/apache2/sites-enabled/000-default.conf
+ADD site.conf /etc/apache2/sites-enabled/site.conf
+RUN a2enmod cgi
+
+CMD apachectl -D FOREGROUND
